@@ -1,0 +1,10 @@
+.my-background-image {
+  background-image: url('/assets/images/casamento.jpeg');
+  background-size: cover;       /* Faz a imagem cobrir toda a div */
+  background-position: center;  /* Centraliza a imagem */
+  background-repeat: no-repeat;
+  border-radius: 0px 0px 15px 15px; /* Evita que a imagem se repita como um mosaico */
+  height: 250px;
+  width: 100%;
+  background-position: 50% 58%;
+}
