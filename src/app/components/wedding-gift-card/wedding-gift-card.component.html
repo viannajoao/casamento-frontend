@@ -1,30 +1,52 @@
-<section>
-  <h2 class="text-3xl font-bold text-stone-800 sm:text-4xl text-center p-10">Nossos Presentes</h2>
-  <div *ngFor="let gift of gifts" class="p-8">
-    <div class="mx-auto max-w-2xl rounded-3xl bg-rose-50 p-6 text-center shadow-sm sm:p-10"
-      aria-label="Cartão de presente de casamento">
-      <p class="text-sm font-semibold uppercase tracking-widest text-rose-700">
-        {{ gift.name }}
-      </p>
-      <img *ngIf="gift.image" [src]="gift.image" [alt]="gift.name" class="mx-auto mt-6 h-40 w-40 rounded-full object-cover sm:h-56 sm:w-56" />
-      <img *ngIf="!gift.image" src="/src/assets/images/default-gift-image.jpg" alt="Imagem padrão de presente" class="mx-auto mt-6 h-40 w-40 rounded-full object-cover sm:h-56 sm:w-56" />
-
-      <h2 class="mt-3 text-2xl font-bold text-stone-800 sm:text-4xl">
-        {{ gift.description }}
-      </h2>
-
-      <p *ngIf="gift.value !== null; else valorPendente" class="mt-3 text-stone-600">
-        Valor total: {{ gift.value | currency:'BRL' }}
-      </p>
-
-      <ng-template #valorPendente>
-        <p class="mt-3 text-stone-600">Valor a definir</p>
-      </ng-template>
-
-      <a *ngIf="gift.value !== null && gift.link" [href]="gift.link" target="_blank" rel="noopener noreferrer"
-        class="mt-8 inline-block rounded-lg bg-rose-700 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-rose-800 focus:outline-none focus:ring focus:ring-offset-2 focus:ring-offset-white focus:ring-rose-700 sm:text-base">
-        Comprar
-      </a>
+<section class="gifts-section" aria-labelledby="gifts-title">
+  <div class="mx-auto max-w-7xl">
+    <header class="mx-auto mb-12 max-w-2xl text-center">
+      <span class="eyebrow">Um carinho para a nossa nova história</span>
+      <h2 id="gifts-title" class="mt-5 font-display text-4xl font-bold text-wine-900 sm:text-5xl lg:text-6xl">Nossos <em class="text-wine-500">presentes</em></h2>
+      <p class="mt-6 leading-7 text-stone-600">Sua presença é o nosso maior presente. Se quiser nos presentear também, escolha um dos nossos sonhos e contribua com o valor que desejar.</p>
+    </header>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <article *ngFor="let gift of gifts" class="gift-card">
+        <div class="relative overflow-hidden bg-wine-50">
+          <img [src]="gift.image" [alt]="gift.name" (error)="onImageError($event)" loading="lazy" class="aspect-[4/3] w-full object-cover" />
+          <span class="image-badge"><i class="fa-solid fa-heart" aria-hidden="true"></i> Feito de carinho</span>
+        </div>
+        <div class="flex flex-1 flex-col p-6 sm:p-7">
+          <h3 class="font-display text-2xl font-bold text-wine-800">{{ gift.name }}</h3>
+          <p class="mb-6 mt-3 text-sm leading-6 text-stone-600">{{ gift.description }}</p>
+          <div class="mt-auto border-t border-wine-100 pt-5">
+            <p class="text-xs font-semibold uppercase tracking-widest text-stone-500">{{ gift.value !== null ? 'Meta do presente' : 'Um presente, muitas possibilidades' }}</p>
+            <p class="mt-1 font-display text-3xl font-bold text-wine-800">{{ gift.value !== null ? formatValue(gift.value) : 'Valor livre' }}</p>
+            <p class="mb-5 mt-2 text-sm text-stone-500">Você pode contribuir com qualquer valor.</p>
+            <button type="button" class="primary-button" (click)="openGift(gift, $event)" aria-haspopup="dialog" [attr.aria-label]="'Presentear: ' + gift.name">Quero presentear <i class="fa-solid fa-arrow-right" aria-hidden="true"></i></button>
+          </div>
+        </div>
+      </article>
     </div>
+    <p class="mt-9 text-center text-sm text-stone-500">Cada gesto faz parte da nossa história. Obrigado pelo carinho!</p>
   </div>
 </section>
+<dialog #paymentDialog class="payment-dialog" aria-labelledby="payment-title" aria-describedby="payment-description" (close)="onDialogClosed()" (click)="onBackdropClick($event)">
+  <div class="dialog-content">
+    <button type="button" class="close-button" aria-label="Fechar opções de presente" (click)="closeDialog()" autofocus><i class="fa-solid fa-xmark" aria-hidden="true"></i></button>
+    <span class="eyebrow">Um presente com amor</span>
+    <h2 id="payment-title" class="mb-4 mt-3 pr-8 font-display text-3xl font-bold text-wine-800">{{ selectedGift?.name }}</h2>
+    <p id="payment-description" class="text-sm leading-6 text-stone-600">Você pode doar <strong class="text-wine-800">qualquer valor</strong>. O valor em destaque no card é apenas a meta do presente, não uma cobrança obrigatória.</p>
+    <section class="mt-7" aria-labelledby="pix-title">
+      <h3 id="pix-title" class="font-display text-xl font-bold text-wine-800"><i class="fa-brands fa-pix mr-2" aria-hidden="true"></i>Presentear com Pix</h3>
+      <p class="mt-2 text-sm leading-6 text-stone-600">Escaneie o QR Code com o aplicativo do seu banco ou copie o código abaixo. Confira o destinatário e informe o valor que deseja doar.</p>
+      <img [src]="payment.pixQrCodeImage" alt="QR Code para contribuir via Pix sem valor fixo" class="mx-auto my-5 h-52 w-52 max-w-full rounded-xl border border-wine-100 bg-white p-3 object-contain" />
+      <p class="text-center text-xs text-stone-500">João Victor Alves Vianna</p>
+      <label for="pix-code" class="mb-2 mt-4 block text-sm font-semibold text-wine-800">Pix Copia e Cola</label>
+      <textarea #pixCode id="pix-code" readonly [value]="payment.pixCopyPaste" rows="3" class="w-full resize-none rounded-xl border border-wine-200 bg-white p-3 text-xs text-stone-600"></textarea>
+      <button type="button" class="primary-button mt-3" (click)="copyPix(pixCode)"><i class="fa-regular fa-copy" aria-hidden="true"></i>Copiar código Pix</button>
+      <p role="status" aria-live="polite" class="mt-2 text-sm text-wine-700">{{ copyMessage }}</p>
+    </section>
+    <section class="mt-6 border-t border-wine-100 pt-6" aria-labelledby="credit-title">
+      <h3 id="credit-title" class="font-display text-xl font-bold text-wine-800">Prefere cartão de crédito?</h3>
+      <p class="mb-4 mt-2 text-sm leading-6 text-stone-600">Você será direcionado ao Mercado Pago para escolher o valor e concluir sua contribuição.</p>
+      <a [href]="cardLink" target="_blank" rel="noopener noreferrer" class="secondary-button"><i class="fa-regular fa-credit-card" aria-hidden="true"></i>Pagar com cartão <span class="sr-only">(abre em outra aba)</span><i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i></a>
+    </section>
+    <p class="mt-6 text-center text-sm italic text-stone-500">Obrigado por fazer parte desse sonho!</p>
+  </div>
+</dialog>

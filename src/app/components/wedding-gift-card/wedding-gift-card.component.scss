@@ -1,0 +1,16 @@
+:host { display: block; scroll-margin-top: 6rem; }
+.gifts-section { padding: 6rem 1.25rem; background: #fffaf2; }
+.eyebrow { color: #6d1835; font-size: .7rem; font-weight: 700; letter-spacing: .2em; text-transform: uppercase; }
+.gift-card { display: flex; flex-direction: column; overflow: hidden; min-width: 0; border: 1px solid #ead8bd; border-radius: 1.75rem; background: #fff; box-shadow: 0 8px 30px #3b0c1d08; }
+.image-badge { position: absolute; bottom: 1rem; left: 1rem; display: flex; align-items: center; gap: .5rem; padding: .5rem .85rem; border-radius: 2rem; background: #fffaf2f2; color: #6d1835; font-size: .7rem; font-weight: 600; }
+.primary-button, .secondary-button { display: flex; width: 100%; min-height: 48px; align-items: center; justify-content: center; gap: .75rem; padding: .85rem 1rem; border-radius: 2rem; font-size: .875rem; font-weight: 700; text-align: center; }
+.primary-button { background: #6d1835; color: #fff; }
+.primary-button:hover { background: #55122a; }
+.secondary-button { border: 1px solid #e4a6b5; color: #6d1835; background: #fff; }
+.secondary-button:hover { background: #fff7f8; }
+button:focus-visible, a:focus-visible, textarea:focus-visible { outline: 3px solid #b58a45; outline-offset: 3px; }
+.payment-dialog { width: min(560px, calc(100% - 2rem)); max-height: calc(100dvh - 2rem); margin: auto; padding: 0; border: 1px solid #ead8bd; border-radius: 1.75rem; color: #292524; background: #fffaf2; overscroll-behavior: contain; box-shadow: 0 24px 80px #3b0c1d33; }
+.payment-dialog::backdrop { background: #3b0c1db3; }
+.dialog-content { position: relative; padding: 2rem; }
+.close-button { position: absolute; top: .75rem; right: .75rem; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; color: #6d1835; background: #fae8ec; }
+@media (max-width: 639px) { .dialog-content { padding: 3.5rem 1.25rem 1.5rem; } .gifts-section { padding-block: 4rem; } }
